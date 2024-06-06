@@ -112,7 +112,14 @@ def gestionar_proveedores(request):
 # Vista para crear un proveedor
 def crear_proveedor(request):
     if request.method == 'POST':
+        print("request.POST")
+        print(request.POST)
+        # antes de llamar a ProveedorForm, se deben eliminar la validacion para el campo telefono
+
+
         form = ProveedorForm(request.POST)
+        print("form")
+        print(form)
         if form.is_valid():
             form.save()
             messages.success(request, 'Proveedor agregado con éxito')
