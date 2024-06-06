@@ -1,0 +1,16 @@
+<!-- Templates/eliminar_cotizacion.html -->
+{% extends "base.html" %}
+
+{% block title %}Eliminar Cotización{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Eliminar Cotización</h1>
+    <p>¿Estás seguro de que deseas eliminar esta cotización?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn">Eliminar</button>
+        <a href="{% url 'gestionar_cotizaciones' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

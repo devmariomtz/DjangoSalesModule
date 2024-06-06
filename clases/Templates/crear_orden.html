@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Orden de Compra</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 8px;
+            text-align: left;
+        }
+        .alert {
+            padding: 15px;
+            background-color: #4CAF50;
+            color: white;
+            opacity: 1;
+            transition: opacity 0.6s;
+            margin-bottom: 15px;
+        }
+        .alert.success {background-color: #4CAF50;}
+        .closebtn {
+            margin-left: 15px;
+            color: white;
+            font-weight: bold;
+            float: right;
+            font-size: 22px;
+            line-height: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .closebtn:hover {
+            color: black;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="bg-gray-200">
+    <div class="container mx-auto my-8 p-8 bg-white rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold text-black text-center mb-8">Crear Orden de Compra</h2>
+
+        <div id="success-message" class="alert success" style="display: none;">
+            <span class="closebtn">&times;</span>
+            Orden de compra guardada con éxito.
+        </div>
+
+        <form method="post" id="orden-form" class="grid grid-cols-1 gap-4" action="{% url 'crear_orden' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            {{ formset.management_form }}
+            <div class="mb-4">
+                <label for="proveedor-select" class="block text-sm font-medium text-gray-700">Proveedor:</label>
+                <select id="proveedor-select" name="proveedor" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <option value="">Seleccione un proveedor</option>
+                    {% for proveedor in proveedores %}
+                        <option value="{{ proveedor.ID }}">{{ proveedor.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <h3 class="text-xl font-bold text-black">Agregar Productos</h3>
+            <table id="productos-table" class="min-w-full divide-y divide-gray-200 mb-8">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unitario</th>
+                        <th>Subtotal</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for form in formset %}
+                        <tr>
+                            <td>{{ form.producto }}</td>
+                            <td>{{ form.cantidad }}</td>
+                            <td class="precio">
+                                {% if form.instance.producto %}
+                                    {{ form.instance.producto.precio }}
+                                {% else %}
+                                    ''
+                                {% endif %}
+                            </td>
+                            <td class="subtotal">{{ form.instance.subtotal }}</td>
+                            <td><button type="button" class="remove-producto btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Eliminar</button></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="button" id="add-producto" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4">Agregar Producto</button>
+            <h3 class="text-xl font-bold text-black mb-4">Total: <span id="total">0.00</span></h3>
+            <input type="hidden" id="total-input" name="total" value="0.00">
+            <div class="form-buttons flex justify-between">
+                <button type="submit" class="btn bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Guardar</button>
+                <button type="button" id="back-button" class="btn bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Regresar</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            var formCount = {{ formset.total_form_count }};
+            var $totalInput = $('#total');
+
+            function actualizarTotal() {
+                var total = 0;
+                $('#productos-table tbody tr').each(function() {
+                    var subtotal = parseFloat($(this).find('.subtotal').text());
+                    if (!isNaN(subtotal)) {
+                        total += subtotal;
+                    }
+                });
+                $totalInput.text(total.toFixed(2));
+                $('#total-input').val(total.toFixed(2));
+            }
+
+            $('#proveedor-select').change(function() {
+                var proveedorId = $(this).val();
+                if (proveedorId) {
+                    $.ajax({
+                        url: '{% url "obtener_productos" %}',
+                        data: {'proveedor_id': proveedorId},
+                        success: function(data) {
+                            // Al seleccionar un proveedor, limpiar la tabla de productos
+                            $('#productos-table tbody').empty();
+                            formCount = 0;
+                            $('#id_detalleorden_set-TOTAL_FORMS').val(formCount);
+                        }
+                    });
+                }
+            });
+
+            $('#add-producto').click(function() {
+                var proveedorId = $('#proveedor-select').val();
+                if (proveedorId) {
+                    $.ajax({
+                        url: '{% url "obtener_productos" %}',
+                        data: {'proveedor_id': proveedorId},
+                        success: function(data) {
+                            var productosSelect = '<select name="detalleorden_set-' + formCount + '-producto" class="producto-select mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">';
+                            productosSelect += '<option value="">Seleccione un producto</option>';
+                            for (var i = 0; i < data.length; i++) {
+                                productosSelect += '<option value="' + data[i].ID + '" data-precio="' + data[i].precio + '">' + data[i].nombre + '</option>';
+                            }
+                            productosSelect += '</select>';
+                            $('#productos-table tbody').append('<tr><td>' + productosSelect + '</td><td><input type="number" name="detalleorden_set-' + formCount + '-cantidad" class="cantidad mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" min="1" value="1"></td><td class="precio">0.00</td><td class="subtotal">0.00</td><td><button type="button" class="remove-producto btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Eliminar</button></td></tr>');
+                            formCount++;
+                            $('#id_detalleorden_set-TOTAL_FORMS').val(formCount);
+                        }
+                    });
+                } else {
+                    alert('Seleccione un proveedor primero');
+                }
+            });
+
+            $(document).on('change', '.producto-select', function() {
+                var precio = $(this).find(':selected').data('precio');
+                var row = $(this).closest('tr');
+                row.find('.precio').text(precio);
+                actualizarSubtotal(row);
+                actualizarTotal();
+            });
+
+            $(document).on('input', '.cantidad', function() {
+                var row = $(this).closest('tr');
+                actualizarSubtotal(row);
+                actualizarTotal();
+            });
+
+            $(document).on('click', '.remove-producto', function() {
+                $(this).closest('tr').remove();
+                formCount--;
+                $('#id_detalleorden_set-TOTAL_FORMS').val(formCount);
+                actualizarTotal();
+            });
+
+            function actualizarSubtotal(row) {
+                var cantidad = row.find('.cantidad').val();
+                var precio = row.find('.precio').text();
+                var subtotal = cantidad * precio;
+                row.find('.subtotal').text(subtotal.toFixed(2));
+            }
+
+            $('#back-button').click(function() {
+                if (confirm('¿Estás seguro de que deseas abandonar esta ventana? Los datos ingresados no se guardarán.')) {
+                    window.location.href = "{% url 'gestionar_cotizaciones' %}";
+                }
+            });
+
+            $('.closebtn').click(function(){
+                $(this).parent().fadeOut();
+            });
+
+            if (window.location.search.includes('success')) {
+                $('#success-message').show();
+                setTimeout(function() {
+                    $('#success-message').fadeOut();
+                }, 2000);
+            }
+
+            actualizarTotal(); // Calcular el total inicial
+        });
+    </script>
+</body>
+</html>
+

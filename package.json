@@ -1,0 +1,12 @@
+{
+  "name": "mc",
+  "version": "1.0.0",
+  "scripts": {
+    "build:css": "tailwindcss -i ./static/css/tailwind.css -o ./static/css/style.css"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.3"
+  }
+}
+
+

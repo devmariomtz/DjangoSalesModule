@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Detalle de Producto{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-4xl p-8 bg-white rounded-lg shadow-lg">
+        <h1 class="text-2xl font-bold text-black text-center mb-8">Detalle de Producto</h1>
+        <div style="color: black;">
+            <p><strong>ID:</strong> {{ producto.ID }}</p>
+            <p><strong>Nombre:</strong> {{ producto.nombre }}</p>
+            <p><strong>Categoría:</strong> {{ producto.categoria }}</p>
+            <p><strong>Precio:</strong> {{ producto.precio }}</p>
+            <p><strong>Descripción:</strong> {{ producto.descripcion }}</p>
+            <p><strong>Proveedor:</strong> {{ producto.proveedor.nombre }}</p>
+        </div>
+        <div class="flex justify-center mt-8">
+            <a href="{% url 'gestionar_productos' %}" class="btn bg-gray-500 text-white px-4 py-2 rounded no-underline">Regresar</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

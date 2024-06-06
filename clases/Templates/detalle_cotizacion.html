@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Detalle de Cotización{% endblock %}
+
+{% block content %}
+<h1>Detalle de Cotización</h1>
+<p><strong>Referencia:</strong> {{ cotizacion.ID }}</p>
+<p><strong>Proveedor:</strong> {{ cotizacion.proveedor.nombre }}</p>
+<p><strong>Fecha de Creación:</strong> {{ cotizacion.fecha_creacion }}</p>
+<p><strong>Fecha Límite:</strong> {{ cotizacion.fecha_limite }}</p>
+<p><strong>Plazo a Pagar:</strong> {{ cotizacion.plazo_pago }}</p>
+<p><strong>Total:</strong> {{ cotizacion.total }}</p>
+<p><strong>Estado:</strong> {{ cotizacion.estado }}</p>
+
+<h2>Detalles de Productos</h2>
+<table class="w-full border-collapse bg-white shadow rounded-lg">
+    <thead>
+        <tr class="bg-blue-100 text-blue-900">
+            <th class="p-4 border">Producto</th>
+            <th class="p-4 border">Cantidad</th>
+            <th class="p-4 border">Precio Unitario</th>
+            <th class="p-4 border">Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for detalle in cotizacion.detalles.all %}
+        <tr class="text-gray-700">
+            <td class="p-4 border">{{ detalle.producto.nombre }}</td>
+            <td class="p-4 border">{{ detalle.cantidad }}</td>
+            <td class="p-4 border">{{ detalle.precio_unitario }}</td>
+            <td class="p-4 border">{{ detalle.subtotal }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if request.session.rol == 'Gerente' %}
+    <form method="post" action="{% url 'aceptar_cotizacion' cotizacion.ID %}">
+        {% csrf_token %}
+        <button type="submit" class="btn bg-green-500 text-white px-4 py-2 rounded">Aceptar</button>
+    </form>
+    <form method="post" action="{% url 'denegar_cotizacion' cotizacion.ID %}">
+        {% csrf_token %}
+        <button type="submit" class="btn bg-red-500 text-white px-4 py-2 rounded">Denegar</button>
+    </form>
+{% endif %}
+
+<a href="{% url 'gestionar_cotizaciones' %}" class="btn btn-secondary">Regresar</a>
+{% endblock %}
+

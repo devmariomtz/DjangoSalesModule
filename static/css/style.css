@@ -1,0 +1,512 @@
+/* Importar fuente Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap');
+
+/* Estilos Globales */
+body {
+    background-color: #445869;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Botones */
+.btn {
+    padding: 6px 12px;  /* Reducir padding */
+    margin: 5px;  /* Reducir margen */
+    border-radius: 5px;
+    background-color: #A13650;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;  /* Reducir tamaño de fuente */
+    width: auto;  /* Ajustar el ancho */
+}
+
+.btn-sm {
+    padding: 3px 6px;  /* Reducir padding */
+    margin: 2px;  /* Reducir margen */
+    font-size: 10px;  /* Reducir tamaño de fuente */
+}
+
+/* Botón de Cerrar Sesión */
+.logout-btn {
+    text-decoration: none;
+    color: white;
+}
+
+/* Título */
+h1 {
+    text-align: center;
+    color: black;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Input */
+.input {
+    padding: 8px;  /* Reducir padding */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: black;
+}
+
+.input-sm {
+    padding: 6px;  /* Reducir padding */
+    font-size: 14px;  /* Reducir tamaño de fuente */
+}
+
+.input-bordered {
+    border-color: #ccc;
+}
+
+/* Estilos de Colores Adicionales */
+.bg-gray-200 {
+    background-color: #E5E7EB;
+}
+
+.bg-gray-500 {
+    background-color: #6B7280;
+}
+
+.bg-blue-500 {
+    background-color: #A13650;
+}
+
+.bg-blue-100 {
+    background-color: #ebf8ff;
+}
+
+.text-blue-900 {
+    color: #1a365d;
+}
+
+.bg-green-500 {
+    background-color: #10B981;
+}
+
+.bg-red-500 {
+    background-color: #A13650;
+}
+
+.bg-orange-500 {
+    background-color: #F97316;
+}
+
+/* Estilos para el contenedor principal */
+.min-h-screen {
+    min-height: 100vh;
+    background-color: #445869;
+}
+
+/* Estilos para el contenedor interno */
+.w-full {
+    width: 100%;
+}
+
+.max-w-4xl {
+    max-width: 64rem;
+}
+
+.bg-white {
+    background-color: #ffffff;
+}
+
+.p-8 {
+    padding: 2rem;
+}
+
+.rounded-lg {
+    border-radius: 0.5rem;
+}
+
+.shadow-lg {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.relative {
+    position: relative;
+}
+
+/* Alinear elementos al centro */
+.flex {
+    display: flex;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.mt-6 {
+    margin-top: 1.5rem;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.mb-6 {
+    margin-bottom: 1.5rem;
+}
+
+.mb-8 {
+    margin-bottom: 2rem;
+}
+
+.mb-12 {
+    margin-bottom: 3rem; /* Nueva clase para margen más grande */
+}
+
+.no-underline {
+    text-decoration: none;
+}
+
+/* Estilos para mensajes */
+.alert {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Estilos para la tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+    color: black; /* Cambiar el texto de la tabla a negro */
+    width: auto;  /* Ajustar el ancho automáticamente */
+}
+
+th {
+    background-color: #ebf8ff;
+    color: #1a365d;
+}
+
+/* Estilos específicos para el formulario de agregar proveedor */
+.agregar-proveedor-label {
+    color: black;
+}
+
+/* Specific styling for the form */
+form {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two columns */
+    gap: 20px;
+}
+
+form > div {
+    display: flex;
+    flex-direction: column;
+}
+
+form label {
+    display: block;
+    margin-bottom: 5px;
+    color: black; /* Cambiar el color del texto a negro */
+}
+
+form input, form select, form textarea {
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: black; /* Cambiar el color del texto a negro */
+}
+
+form button {
+    padding: 8px 16px;  /* Reducir padding */
+    background-color: #A13650;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: auto;  /* Ajustar el ancho */
+    font-size: 14px;  /* Reducir tamaño de fuente */
+}
+
+form button:hover {
+    background-color: #8C2E43;
+}
+
+/* Botones organizados en una fila */
+.form-buttons {
+    grid-column: span 2;
+    display: flex;
+    justify-content: center; /* Centrar los botones */
+    gap: 20px; /* Añadir espacio entre los botones */
+}
+
+/* Nueva clase para ajustar el ancho de los botones */
+.form-btn {
+    width: 150px; /* Ancho específico para los botones del formulario */
+}
+/* Estilos para el contenedor de detalle de proveedor */
+.detalle-proveedor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dos columnas */
+    gap: 20px; /* Espacio entre los elementos */
+    color: black; /* Asegurar que el texto sea negro */
+}
+
+.detalle-proveedor-grid p {
+    margin: 0;
+    padding: 8px;
+    border-bottom: 1px solid #ccc; /* Línea inferior para separar los elementos */
+    color: black; /* Asegurar que el texto sea negro */
+}
+
+.detalle-proveedor-grid p strong {
+    display: inline-block;
+    width: 150px; /* Ancho fijo para las etiquetas */
+    color: #1a365d; /* Color de las etiquetas */
+}
+
+.detalle-proveedor-grid p:last-child {
+    border-bottom: none; /* Quitar la línea inferior del último elemento */
+}
+
+/* Estilos globales (ya incluidos anteriormente) */
+body {
+    background-color: #445869;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+}
+
+h1 {
+    text-align: center;
+    color: black;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.min-h-screen {
+    min-height: 100vh;
+    background-color: #445869;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.max-w-4xl {
+    max-width: 64rem;
+}
+
+.bg-white {
+    background-color: #ffffff;
+}
+
+.p-8 {
+    padding: 2rem;
+}
+
+.rounded-lg {
+    border-radius: 0.5rem;
+}
+
+.shadow-lg {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.relative {
+    position: relative;
+}
+
+.flex {
+    display: flex;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.mt-8 {
+    margin-top: 2rem;
+}
+
+.no-underline {
+    text-decoration: none;
+}
+
+.btn {
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.bg-gray-500 {
+    background-color: #6B7280;
+    color: white;
+}
+
+.bg-gray-500:hover {
+    background-color: #4B5563;
+}
+
+.px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.py-2 {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.rounded {
+    border-radius: 0.25rem;
+}
+
+/*  */
+/* Estilos Globales */
+body {
+    background-color: #445869;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Estilos para el contenedor principal */
+.min-h-screen {
+    min-height: 100vh;
+    background-color: #445869;
+}
+
+/* Estilos para el contenedor interno */
+.w-full {
+    width: 100%;
+}
+
+.max-w-4xl {
+    max-width: 64rem;
+}
+
+.bg-white {
+    background-color: #ffffff;
+}
+
+.p-8 {
+    padding: 2rem;
+}
+
+.rounded-lg {
+    border-radius: 0.5rem;
+}
+
+.shadow-lg {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.relative {
+    position: relative;
+}
+
+/* Alinear elementos al centro */
+.flex {
+    display: flex;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.py-6 {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.mb-8 {
+    margin-bottom: 2rem;
+}
+
+.mt-2 {
+    margin-top: 0.5rem;
+}
+
+.no-underline {
+    text-decoration: none;
+}
+
+/* Estilos para el formulario */
+form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Alinear botones */
+.form-buttons {
+    grid-column: span 2;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 2rem;
+}
+
+/* Estilos de entrada */
+.input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: black;
+}
+
+.input-bordered {
+    border-color: #ccc;
+}
+
+/* Botones */
+.btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #A13650;
+    color: white;
+    text-decoration: none;
+}
+
+.bg-green-500 {
+    background-color: #10B981;
+}
+
+.bg-gray-500 {
+    background-color: #6B7280;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

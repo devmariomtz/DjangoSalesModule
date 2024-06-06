@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Detalle del Proveedor{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-4xl p-8 bg-white rounded-lg shadow-lg">
+        <h1 class="text-2xl font-bold text-black text-center mb-8">Detalle del Proveedor</h1>
+        <div style="color: black;">
+            <p><strong>ID:</strong> {{ proveedor.ID }}</p>
+            <p><strong>Nombre:</strong> {{ proveedor.nombre }}</p>
+            <p><strong>Teléfono:</strong> {{ proveedor.telefono }}</p>
+            <p><strong>Correo Electrónico:</strong> {{ proveedor.correo_electronico }}</p>
+            <p><strong>Ciudad:</strong> {{ proveedor.ciudad }}</p>
+            <p><strong>País:</strong> {{ proveedor.pais }}</p>
+            <p><strong>Tipo de Servicio:</strong> {{ proveedor.tipo_servicio }}</p>
+            <p><strong>Dirección:</strong> {{ proveedor.direccion }}</p>
+            <p><strong>Nombre del Vendedor:</strong> {{ proveedor.vendedor_nombre }}</p>
+            <p><strong>Apellido del Vendedor:</strong> {{ proveedor.vendedor_apellido }}</p>
+            <p><strong>Puesto del Vendedor:</strong> {{ proveedor.vendedor_puesto }}</p>
+        </div>
+        <div class="flex justify-center mt-8">
+            <a href="{% url 'gestionar_proveedores' %}" class="btn bg-gray-500 text-white px-4 py-2 rounded no-underline">Regresar</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+

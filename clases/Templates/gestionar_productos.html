@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Productos{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-dark-blue flex items-center justify-center py-6">
+    <div class="w-full max-w-4xl bg-white p-8 rounded-lg shadow-lg relative">
+        <h1 class="text-2xl font-bold text-black text-center mb-8 mt-2">Gestión de Productos</h1>
+        <div class="flex justify-center mb-6">
+            <a href="{% url 'registrar_producto' %}" class="btn bg-green-500 text-white px-4 py-2 rounded no-underline">
+                <i class="fa fa-plus mr-2"></i> Registrar Producto
+            </a>
+        </div>
+        <div class="flex justify-center mb-6 space-x-2">
+            <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Buscar Producto" class="input input-bordered w-1/2 px-4 py-2 border rounded">
+        </div>
+        <div class="flex justify-center mb-6 space-x-2">
+            <input type="number" id="minPriceInput" placeholder="Precio Mínimo" class="input input-bordered w-1/4 px-4 py-2 border rounded">
+            <input type="number" id="maxPriceInput" placeholder="Precio Máximo" class="input input-bordered w-1/4 px-4 py-2 border rounded">
+            <button class="btn bg-blue-500 text-white px-4 py-2 rounded" onclick="filterTable()">
+                <i class="fa fa-filter"></i> Filtrar por Precio
+            </button>
+        </div>
+        <div class="overflow-x-auto">
+            <table id="productsTable" class="w-full border-collapse bg-white shadow rounded-lg">
+                <thead>
+                    <tr class="bg-blue-100 text-blue-900">
+                        <th class="p-4 border">ID</th>
+                        <th class="p-4 border">Nombre</th>
+                        <th class="p-4 border">Categoría</th>
+                        <th class="p-4 border">Precio</th>
+                        <th class="p-4 border">Proveedor</th>
+                        <th class="p-4 border">Editar</th>
+                        <th class="p-4 border">Eliminar</th>
+                        <th class="p-4 border">Detalle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos %}
+                    <tr class="text-gray-700">
+                        <td class="p-4 border">{{ producto.ID }}</td>
+                        <td class="p-4 border">{{ producto.nombre }}</td>
+                        <td class="p-4 border">{{ producto.categoria }}</td>
+                        <td class="p-4 border">{{ producto.precio }}</td>
+                        <td class="p-4 border">{{ producto.proveedor.nombre }}</td>
+                        <td class="p-4 border">
+                            <a href="{% url 'editar_producto' producto.ID %}" class="btn bg-blue-500 text-white px-2 py-1 text-xs rounded no-underline">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        </td>
+                        <td class="p-4 border">
+                            <a href="{% url 'eliminar_producto' producto.ID %}" class="btn bg-red-500 text-white px-2 py-1 text-xs rounded no-underline" onclick="return confirm('¿Estás seguro que deseas eliminar este producto?')">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </td>
+                        <td class="p-4 border">
+                            <a href="{% url 'detalle_producto' producto.ID %}" class="btn bg-gray-500 text-white px-2 py-1 text-xs rounded no-underline">
+                                <i class="fa fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="flex justify-center mt-6">
+            <a href="{% url 'gestionar_cotizaciones' %}" class="btn bg-gray-500 text-white px-4 py-2 rounded no-underline">
+                <i class="fa fa-arrow-left mr-2"></i> Regresar a Cotizaciones
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+function filterTable() {
+    var input, filter, table, tr, td, i, j, txtValue;
+    var minPrice, maxPrice, priceValue;
+    input = document.getElementById("searchInput");
+    minPrice = document.getElementById("minPriceInput").value;
+    maxPrice = document.getElementById("maxPriceInput").value;
+    filter = input.value.toUpperCase();
+    table = document.getElementById("productsTable");
+    tr = table.getElementsByTagName("tr");
+
+    for (i = 1; i < tr.length; i++) { // start from 1 to skip table header
+        tr[i].style.display = "none"; // hide the row initially
+        td = tr[i].getElementsByTagName("td");
+        let showRow = true; // flag to decide if the row should be displayed
+
+        // Check price range
+        priceValue = parseFloat(td[3].innerText) || 0;
+        if ((minPrice && priceValue < minPrice) || (maxPrice && priceValue > maxPrice)) {
+            showRow = false; // hide row if price is out of range
+        }
+
+        // Check search input
+        if (showRow) {
+            showRow = false; // reset flag to check search input
+            for (j = 0; j < td.length; j++) {
+                if (td[j]) {
+                    txtValue = td[j].textContent || td[j].innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        showRow = true; // show row if any cell matches search input
+                        break; // stop searching further columns
+                    }
+                }
+            }
+        }
+
+        if (showRow) {
+            tr[i].style.display = ""; // show the row
+        }
+    }
+}
+</script>
+{% endblock %}
+
+
+
+
+
+

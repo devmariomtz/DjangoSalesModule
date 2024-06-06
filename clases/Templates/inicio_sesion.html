@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de Sesión</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Estilos globales */
+        body {
+            background-color: #445869;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Estilos del contenedor del formulario */
+        .form-container {
+            width: 350px;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        /* Estilos del encabezado */
+        .form-container h1 {
+            text-align: center;
+            color: black;
+            margin-bottom: 20px;
+        }
+
+        /* Estilos de los íconos y campos de entrada */
+        .form-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .form-group i {
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            transform: translateY(-50%);
+            color: gray;
+        }
+
+        .form-input {
+            width: calc(100% - 40px);
+            padding: 8px;
+            padding-left: 30px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f0f0f0;
+        }
+
+        .icon-show-password-container {
+            text-align: right;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+
+        .icon-show-password {
+            cursor: pointer;
+            color: gray;
+        }
+
+        /* Estilos del botón de envío */
+        .submit-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #A13650;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background-color: #87122e;
+        }
+
+        /* Estilos de mensajes de error */
+        .error-messages {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Inicio de Sesión a Compras</h1>
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            {% if messages %}
+                <div class="error-messages">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div class="form-group">
+                <i class="fas fa-user"></i>
+                <label for="id_id" class="sr-only">ID:</label>
+                <input id="id_id" type="text" name="id" class="form-input" placeholder="ID">
+            </div>
+            <div class="form-group">
+                <i class="fas fa-lock"></i>
+                <label for="id_contrasena" class="sr-only">Contraseña:</label>
+                <input id="id_contrasena" type="password" name="contrasena" class="form-input" placeholder="Contraseña">
+            </div>
+            <div class="icon-show-password-container">
+                <i class="fas fa-eye icon-show-password" onclick="togglePasswordVisibility('id_contrasena', this)"></i>
+            </div>
+            <button type="submit" class="submit-btn">Iniciar Sesión</button>
+        </form>
+    </div>
+    <script>
+        function togglePasswordVisibility(passwordFieldId, toggleIcon) {
+            var passwordField = document.getElementById(passwordFieldId);
+            var passwordFieldType = passwordField.getAttribute('type');
+            if (passwordFieldType === 'password') {
+                passwordField.setAttribute('type', 'text');
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.setAttribute('type', 'password');
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

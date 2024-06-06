@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Agregar Proveedor{% endblock %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-4xl p-8 bg-white rounded-lg shadow-lg relative">
+        <h1 class="text-2xl font-bold text-black text-center mb-8">Agregar Proveedor</h1>
+        <form method="post" id="proveedorForm">
+            {% csrf_token %}
+            {% if messages %}
+                <div id="message-container" class="col-span-2 alert alert-success">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div>
+                <label for="id_ID" class="agregar-proveedor-label">ID:</label>
+                {{ form.ID|add_class:"input input-bordered input-sm w-full text-black" }}
+            </div>
+            <div>
+                <label for="id_nombre" class="agregar-proveedor-label">Nombre:</label>
+                {{ form.nombre|add_class:"input input-bordered input-sm w-full text-black" }}
+            </div>
+            <div>
+                <label for="id_telefono" class="agregar-proveedor-label">Teléfono:</label>
+                {{ form.telefono|add_class:"input input-bordered input-sm w-full text-black" }}
+            </div>
+            <div>
+                <label for="id_correo_electronico" class="agregar-proveedor-label">Correo Electrónico:</label>
+                {{ form.correo_electronico|add_class:"input input-bordered input-sm w-full text-black" }}
+            </div>
+            <div>
+                <label for="id_pais" class="agregar-proveedor-label">País:</label>
+                {{ form.pais|add_class:"input input-bordered input-sm w-full text-black" }}
+            </div>
+            <div>
+                <label for="id_ciudad" class="agregar-proveedor-label">Ciudad:</label>
+                {{ form.ciudad|add_class:"input input-bordered input-sm w-full text-black" }}
+            </div>
+            <div>
+                <label for="id_direccion" class="agregar-proveedor-label">Dirección:</label>
+                {{ form.direccion|add_class:"input input-bordered input-sm w-full text-black" }}
+            </div>
+            <div>
+                <label for="id_tipo_servicio" class="agregar-proveedor-label">Tipo de Servicio:</label>
+                {{ form.tipo_servicio|add_class:"input input-bordered input-sm w-full text-black" }}
+            </div>
+            <div>
+                <label for="id_vendedor_nombre" class="agregar-proveedor-label">Nombre del Vendedor:</label>
+                {{ form.vendedor_nombre|add_class:"input input-bordered input-sm w-full text-black" }}
+            </div>
+            <div>
+                <label for="id_vendedor_apellido" class="agregar-proveedor-label">Apellido del Vendedor:</label>
+                {{ form.vendedor_apellido|add_class:"input input-bordered input-sm w-full text-black" }}
+            </div>
+            <div>
+                <label for="id_vendedor_puesto" class="agregar-proveedor-label">Puesto del Vendedor:</label>
+                {{ form.vendedor_puesto|add_class:"input input-bordered input-sm w-full text-black" }}
+            </div>
+            <!-- Espacio vacío para mover los botones más abajo -->
+            <div class="col-span-2 mb-8"></div>
+            <div class="col-span-2 flex justify-end gap-4">
+                <button type="submit" class="btn form-btn bg-green-500">Registrar</button>
+                <a href="{% url 'gestionar_proveedores' %}" class="btn form-btn bg-gray-500 text-white px-4 py-2 rounded no-underline" id="regresarBtn">
+                    Regresar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ocultar los mensajes después de 1 segundo
+        setTimeout(function() {
+            const messageContainer = document.getElementById('message-container');
+            if (messageContainer) {
+                messageContainer.style.display = 'none';
+            }
+        }, 1000);
+
+        // Validación de campo ID
+        document.getElementById('proveedorForm').addEventListener('submit', function(event) {
+            const idField = document.getElementById('id_ID');
+            const idValue = idField.value.trim();
+            const idPattern = /^P\d{4}$/;
+
+            if (!idPattern.test(idValue)) {
+                alert("El ID debe empezar con 'P' seguido de 4 dígitos.");
+                event.preventDefault(); // Previene el envío del formulario
+                idField.focus();
+            }
+        });
+
+        // Confirmación al intentar regresar
+        document.getElementById('regresarBtn').addEventListener('click', function(event) {
+            var form = document.getElementById('proveedorForm');
+            var formData = new FormData(form);
+            var hasData = false;
+
+            for (var value of formData.values()) {
+                if (value.trim() !== "") {
+                    hasData = true;
+                    break;
+                }
+            }
+
+            if (hasData) {
+                var confirmLeave = confirm("Los datos ingresados no se guardarán, ¿desea regresar?");
+                if (!confirmLeave) {
+                    event.preventDefault();
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load multiply %}
+
+{% block title %}Agregar Detalles a la Orden{% endblock %}
+
+{% block content %}
+    <h1>Agregar Detalles a la Orden {{ orden.ID }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Agregar Producto</button>
+    </form>
+    <h2>Detalles de la Orden</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for detalle in detalles %}
+            <tr>
+                <td>{{ detalle.producto.nombre }}</td>
+                <td>{{ detalle.cantidad }}</td>
+                <td>{{ detalle.precio_unitario }}</td>
+                <td>{{ detalle.cantidad|multiply:detalle.precio_unitario }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p>Total de la Orden: {{ orden.total }}</p>
+{% endblock %}
+

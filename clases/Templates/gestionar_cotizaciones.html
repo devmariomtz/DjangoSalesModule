@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Cotizaciones{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-dark-blue flex items-center justify-center py-6">
+    <div class="w-full max-w-4xl bg-white p-8 rounded-lg shadow-lg relative">
+        <a href="{% url 'cerrar_sesion' %}" class="absolute top-4 right-4 text-white text-xl">
+            <i class="fa fa-sign-out-alt"></i>
+        </a>
+        <h1 class="text-2xl font-bold text-black text-center mb-8 mt-2">Gestión de Cotizaciones</h1>
+
+        <!-- Mostrar mensajes -->
+        {% if messages %}
+            <div id="message-container">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="flex justify-center mb-6 space-x-4">
+            <a href="{% url 'gestionar_proveedores' %}" class="btn bg-green-500 text-white px-4 py-2 rounded no-underline">
+                <i class="fa fa-truck mr-2"></i> Gestionar Proveedores
+            </a>
+            <a href="{% url 'gestionar_productos' %}" class="btn bg-red-500 text-white px-4 py-2 rounded no-underline">
+                <i class="fa fa-box mr-2"></i> Gestionar Productos
+            </a>
+            <a href="{% url 'crear_orden' %}" class="btn bg-orange-500 text-white px-4 py-2 rounded no-underline">
+                <i class="fa fa-plus mr-2"></i> Crear Nueva Orden
+            </a>
+        </div>
+
+        <form id="search-form" method="GET" action="{% url 'gestionar_cotizaciones' %}" class="mb-6 space-y-4">
+            <div class="flex space-x-2">
+                <input type="text" name="q" placeholder="Ingresar ID o Proveedor" value="{{ request.GET.q }}" class="input input-bordered w-full px-4 py-2 border rounded">
+                <input type="date" name="fecha_inicio" value="{{ request.GET.fecha_inicio }}" class="input input-bordered px-4 py-2 border rounded">
+                <input type="date" name="fecha_fin" value="{{ request.GET.fecha_fin }}" class="input input-bordered px-4 py-2 border rounded">
+            </div>
+            <div class="flex space-x-2">
+                <select name="estado" class="input input-bordered px-4 py-2 border rounded">
+                    <option value="">Todos los estados</option>
+                    <option value="Enviado" {% if request.GET.estado == 'Enviado' %}selected{% endif %}>Enviado</option>
+                    <option value="Aceptado" {% if request.GET.estado == 'Aceptado' %}selected{% endif %}>Aceptado</option>
+                    <option value="Denegado" {% if request.GET.estado == 'Denegado' %}selected{% endif %}>Denegado</option>
+                </select>
+                <input type="number" name="costo_min" placeholder="Costo mínimo" value="{{ request.GET.costo_min }}" class="input input-bordered w-full px-4 py-2 border rounded">
+                <input type="number" name="costo_max" placeholder="Costo máximo" value="{{ request.GET.costo_max }}" class="input input-bordered w-full px-4 py-2 border rounded">
+            </div>
+        </form>
+
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse bg-white shadow rounded-lg">
+                <thead>
+                    <tr class="bg-blue-100 text-blue-900">
+                        <th class="p-4 border">ID</th>
+                        <th class="p-4 border">Proveedor</th>
+                        <th class="p-4 border">Fecha de creación de orden</th>
+                        <th class="p-4 border">Fecha límite de orden</th>
+                        <th class="p-4 border">Plazo a pagar</th>
+                        <th class="p-4 border">Total</th>
+                        <th class="p-4 border">Estado</th>
+                        <th class="p-4 border">Editar</th>
+                        <th class="p-4 border">Eliminar</th>
+                        <th class="p-4 border">Detalle</th>
+                    </tr>
+                </thead>
+                <tbody id="cotizaciones-body">
+                    {% for cotizacion in cotizaciones %}
+                    <tr class="text-gray-700">
+                        <td class="p-4 border">{{ cotizacion.ID }}</td>
+                        <td class="p-4 border">{{ cotizacion.proveedor.nombre }}</td>
+                        <td class="p-4 border">{{ cotizacion.fecha_creacion }}</td>
+                        <td class="p-4 border">{{ cotizacion.fecha_limite }}</td>
+                        <td class="p-4 border">{{ cotizacion.plazo_pago }}</td>
+                        <td class="p-4 border">{{ cotizacion.total }}</td>
+                        <td class="p-4 border">{{ cotizacion.estado }}</td>
+                        <td class="p-4 border">
+                            {% if cotizacion.estado != 'Aceptado' %}
+                                <a href="{% url 'editar_cotizacion' cotizacion.ID %}" class="btn bg-blue-500 text-white px-4 py-2 rounded no-underline">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                            {% endif %}
+                        </td>
+                        <td class="p-4 border">
+                            {% if cotizacion.estado == 'Enviado' %}
+                                <a href="{% url 'eliminar_cotizacion' cotizacion.ID %}" class="btn bg-red-500 text-white px-4 py-2 rounded no-underline" onclick="return confirm('¿Estás seguro que deseas eliminar esta cotización?')">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            {% endif %}
+                        </td>
+                        <td class="p-4 border">
+                            <a href="{% url 'detalle_cotizacion' cotizacion.ID %}" class="btn bg-gray-500 text-white px-4 py-2 rounded no-underline">
+                                <i class="fa fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Ocultar los mensajes después de 5 segundos
+    setTimeout(function() {
+        const messageContainer = document.getElementById('message-container');
+        if (messageContainer) {
+            messageContainer.style.display = 'none';
+        }
+    }, 5000);
+
+    // Búsqueda dinámica
+    document.getElementById('search-form').addEventListener('input', function() {
+        const form = this;
+        const url = new URL(form.action);
+        const params = new URLSearchParams(new FormData(form)).toString();
+        fetch(`${url.pathname}?${params}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }).then(response => response.text()).then(data => {
+            document.getElementById('cotizaciones-body').innerHTML = new DOMParser().parseFromString(data, 'text/html').querySelector('#cotizaciones-body').innerHTML;
+        });
+    });
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
