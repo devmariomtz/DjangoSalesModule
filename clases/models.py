@@ -141,13 +141,41 @@ class OrdenCompra(models.Model):
             if not OrdenCompra.objects.filter(ID=new_id).exists():
                 return new_id
 
-    def __str__(self):
-        return f"Orden #{self.ID} - {self.proveedor.nombre}"
+    # def __str__(self):
+    #     return f"Orden #{self.ID} - {self.proveedor.nombre}"
 
 
 class DetalleOrden(models.Model):
+    # orden = models.ForeignKey(
+    #     OrdenCompra, on_delete=models.CASCADE, related_name="detalles"
+    # )
+    # producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    # cantidad = models.IntegerField()
+    # precio_unitario = models.DecimalField(
+    #     max_digits=10, decimal_places=2, editable=False
+    # )
+
     orden = models.ForeignKey(
-        OrdenCompra, on_delete=models.CASCADE, related_name="detalles"
+        OrdenCompra, 
+        on_delete=models.CASCADE, 
+        related_name='detalles_orden'
+    )
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+
+    # def __str__(self):
+    #     return f"{self.producto.nombre} - {self.cantidad} unidades"
+
+    # def save(self, *args, **kwargs):
+    #     self.precio_unitario = self.producto.precio
+    #     self.subtotal = self.cantidad * self.precio_unitario
+    #     super().save(*args, **kwargs)
+
+
+class productosDetalleOrden(models.Model):
+    orden = models.ForeignKey(
+        OrdenCompra, 
+        on_delete=models.CASCADE, 
+        related_name='productos_detalle_orden'
     )
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.IntegerField()

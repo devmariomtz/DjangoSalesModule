@@ -2,7 +2,7 @@ from django import forms
 from django.core.validators import RegexValidator
 from django.forms import inlineformset_factory
 
-from .models import Usuario, Proveedor, Producto, DetalleOrden, OrdenCompra
+from .models import Usuario, Proveedor, Producto, DetalleOrden, OrdenCompra, productosDetalleOrden
 
 class LoginForm(forms.Form):
     id = forms.CharField(
@@ -49,32 +49,42 @@ class OrdenCompraForm(forms.ModelForm):
 class DetalleOrdenForm(forms.ModelForm):
     class Meta:
         model = DetalleOrden
-        fields = ['producto', 'cantidad']
-        widgets = {
-            'producto': forms.Select(attrs={'class': 'form-control'}),
-            'cantidad': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
-        }
+        fields = '__all__'
+        # fields = ['producto', 'cantidad']
+        # widgets = {
+        #     'producto': forms.Select(attrs={'class': 'form-control'}),
+        #     'cantidad': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
+        # }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['producto'].queryset = Producto.objects.none()
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['producto'].queryset = Producto.objects.none()
 
-        if 'proveedor' in self.data:
-            try:
-                proveedor_id = int(self.data.get('proveedor'))
-                self.fields['producto'].queryset = Producto.objects.filter(proveedor_id=proveedor_id).order_by('nombre')
-            except (ValueError, TypeError):
-                pass  # fallback to empty queryset
-        elif self.instance.pk:
-            self.fields['producto'].queryset = self.instance.proveedor.producto_set.order_by('nombre')
+    #     if 'proveedor' in self.data:
+    #         try:
+    #             proveedor_id = int(self.data.get('proveedor'))
+    #             self.fields['producto'].queryset = Producto.objects.filter(proveedor_id=proveedor_id).order_by('nombre')
+    #         except (ValueError, TypeError):
+    #             pass  # fallback to empty queryset
+    #     elif self.instance.pk:
+    #         self.fields['producto'].queryset = self.instance.proveedor.producto_set.order_by('nombre')
 
-            def clean(self):
-                cleaned_data = super().clean()
-                producto_id = cleaned_data.get('producto')
-                print("Instancia de DetalleOrden:", self.instance)  # Agregar esta línea
-                if not Producto.objects.filter(id=producto_id).exists():
-                    raise forms.ValidationError("Producto no válido")
-                return cleaned_data
+    #         def clean(self):
+    #             cleaned_data = super().clean()
+    #             producto_id = cleaned_data.get('producto')
+    #             print("Instancia de DetalleOrden:", self.instance)  # Agregar esta línea
+    #             if not Producto.objects.filter(id=producto_id).exists():
+    #                 raise forms.ValidationError("Producto no válido")
+    #             return cleaned_data
+
+# formset para DetalleOrden con los productos de la lista de productos del proveedor seleccionado
+# DetalleOrdenFormSet = inlineformset_factory(
+#     OrdenCompra,  # Modelo padre
+#     productosDetalleOrden,  # Modelo hijo
+#     fields='__all__',  # Puedes personalizar los campos según tus necesidades
+#     extra=1,  # Número inicial de formularios adicionales
+#     can_delete=True  # Permite eliminar instancias
+# )
 
 DetalleOrdenFormSet = inlineformset_factory(OrdenCompra, DetalleOrden, form=DetalleOrdenForm, extra=1, can_delete=True)
 

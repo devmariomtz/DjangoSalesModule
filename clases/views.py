@@ -1,14 +1,24 @@
+import json
+from decimal import Decimal
 from django.contrib import messages
+from django.db import IntegrityError, transaction
 from django.db.models import Q
-from django.db import transaction,IntegrityError
-from django.urls import reverse
-from django.http import JsonResponse
-from django.shortcuts import render, redirect, get_object_or_404
-from .forms import LoginForm, OrdenCompraForm, ProveedorForm, ProductoForm, DetalleOrdenFormSet, DetalleOrdenForm
-from .models import Usuario, OrdenCompra, Proveedor, Producto, DetalleOrden
-from django.views.generic.edit import CreateView, UpdateView
-from django.urls import reverse_lazy
 from django.forms import inlineformset_factory
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse, reverse_lazy
+from django.views.generic.edit import CreateView, UpdateView
+
+from .forms import (
+    DetalleOrdenForm,
+    DetalleOrdenFormSet,
+    LoginForm,
+    OrdenCompraForm,
+    ProductoForm,
+    ProveedorForm,
+)
+from .models import DetalleOrden, OrdenCompra, Producto, Proveedor, Usuario,productosDetalleOrden
+
 
 # Vista para el inicio de sesión
 def inicio_sesion(request):
@@ -210,41 +220,92 @@ def detalle_producto(request, id):
 
 # Vista para crear una nueva orden
 def crear_orden_view(request):
-    DetalleOrdenFormSet = inlineformset_factory(OrdenCompra, DetalleOrden, form=DetalleOrdenForm, extra=1, can_delete=True)
-
-    if request.method == 'POST':
+    if (request.method == 'POST'):
+        print('-------------request.method-----------------')
+        print(request.method)
+        print('-------------request.POST-----------------')
+        print(request.POST)
+        # pintar la lista de los productos
+        # hacer una lista con los productos que viene en el request.POST en formato json ['[{"producto":"P123","cantidad":"2"}]']
+        productos = json.loads(request.POST.get('productos'))  
+        # print('-------------productos-----------------')
+        # print(productos)
+        
         form = OrdenCompraForm(request.POST)
-        formset = DetalleOrdenFormSet(request.POST)
+    
+        # Añade los campos ocultos necesarios al request.POST
+        # request.POST['productos_detalle_orden-TOTAL_FORMS'] = '1'
+        # request.POST['productos_detalle_orden-INITIAL_FORMS'] = '0'
+        # request.POST['productos_detalle_orden-MIN_NUM_FORMS'] = '0'
+        # request.POST['productos_detalle_orden-MAX_NUM_FORMS'] = '1000'
+        # print('----beforeinstanciate----')
+        # formset = DetalleOrdenFormSet(request.POST, request.FILES)
 
-        if form.is_valid() and formset.is_valid():
+        # print('----------------detalleordenformset----------------')
+        # print(formset)    
+
+        if form.is_valid():
             try:
                 with transaction.atomic():
                     orden = form.save()
-                    formset.instance = orden
-                    formset.save()
+                    
+                    # formset.instance = orden
+                    # formset.save()
+
+                   
+        
                     total = request.POST.get('total')  # Obtener el total del formulario
                     orden.total = total
                     orden.save()
+
+                    detalle_orden = DetalleOrden.objects.create(
+                        orden=orden,
+                        subtotal=total
+                    )
+                    detalle_orden.save()
+
+                     # guardar el detalle de la orden que tiene estos campos: orden_id, subtotal
+                    for producto in productos:
+                        # traer el producto de la base de datos con al id del producto que viene en el request.POST
+                        productoInstance = Producto.objects.get(ID=producto['producto'])
+
+                        detalle_orden = productosDetalleOrden.objects.create(
+                            orden=orden,
+                            producto=productoInstance,
+                            cantidad=Decimal(str(producto['cantidad'])),
+                            subtotal=Decimal(str(producto['subtotal'])),
+                            precio_unitario=Decimal(str(producto['precio']))
+                        )
+                        detalle_orden.save()
                     messages.success(request, 'Orden creada con éxito.')
                     return redirect('gestionar_cotizaciones')
             except Exception as e:
+                form = OrdenCompraForm()
+                formset = DetalleOrdenForm()
+                productos_formset = DetalleOrdenFormSet()
                 print("Error al guardar la orden:", e)
                 messages.error(request, 'Ocurrió un error al guardar la orden. Intente nuevamente.')
         else:
             # Imprimir errores del formulario y del formset
             print("Form errors:", form.errors)
-            print("Formset errors:", formset.errors)
-            for form in formset:
-                print("DetalleOrden form errors:", form.errors)
+            # print("Formset errors:", formset.errors)
+            # for form in formset:
+            #     print("DetalleOrden form errors:", form.errors)
+            form = OrdenCompraForm()
+            formset = DetalleOrdenForm()
+            productos_formset = DetalleOrdenFormSet()
             messages.error(request, 'Por favor, corrija los errores a continuación.')
     else:
         form = OrdenCompraForm()
-        formset = DetalleOrdenFormSet()
+        formset = DetalleOrdenForm()
+        productos_formset = DetalleOrdenFormSet()
+
 
     context = {
         'form': form,
         'formset': formset,
-        'proveedores': Proveedor.objects.all()
+        'proveedores': Proveedor.objects.all(),
+        'productos_formset': productos_formset,
     }
     return render(request, 'crear_orden.html', context)
 

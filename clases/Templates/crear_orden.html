@@ -48,7 +48,10 @@
         <form method="post" id="orden-form" class="grid grid-cols-1 gap-4" action="{% url 'crear_orden' %}">
             {% csrf_token %}
             {{ form.as_p }}
-            {{ formset.management_form }}
+            {{ detalle_form.as_p }}
+            {{ orden_form.as_p }}
+            {{ productos_formset.management_form }}
+            <!-- {{ formset.management_form }} -->
             <div class="mb-4">
                 <label for="proveedor-select" class="block text-sm font-medium text-gray-700">Proveedor:</label>
                 <select id="proveedor-select" name="proveedor" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
@@ -98,8 +101,11 @@
     </div>
 
     <script>
+        // limpiar toda la tabla de productos
+        $('#productos-table tbody').empty();
         $(document).ready(function() {
-            var formCount = {{ formset.total_form_count }};
+            var formCount = 0;
+
             var $totalInput = $('#total');
 
             function actualizarTotal() {
@@ -199,8 +205,42 @@
             }
 
             actualizarTotal(); // Calcular el total inicial
+            
+            $('#orden-form').submit(function(e) {
+    e.preventDefault();
+    var productos = [];
+    $('#productos-table tbody tr').each(function() {
+        var producto = $(this).find('.producto-select').val();
+        var cantidad = $(this).find('.cantidad').val();
+        if (producto && cantidad) {
+            productos.push({
+                'producto': producto,
+                'cantidad': cantidad,
+                // agregar el precio del producto
+                'precio': $(this).find('.precio').text(),
+                'subtotal': $(this).find('.subtotal').text()
+            });
+        }
+    });
+    // Remover el campo oculto si ya existe
+    $('input[name="productos"]').remove();
+    // Añadir el campo oculto con la lista de productos
+    $('#orden-form').append('<input type="hidden" name="productos" value=\'' + JSON.stringify(productos) + '\'>');
+    $.ajax({
+        type: 'POST',
+        url: '{% url "crear_orden" %}',
+        data: $(this).serialize(),
+        success: function(data) {
+            $('#success-message').show();
+            setTimeout(function() {
+                $('#success-message').fadeOut();
+                window.location.href = "{% url 'gestionar_cotizaciones' %}";
+            }, 2000);
+        }
+    });
+});
+
         });
     </script>
 </body>
 </html>
-
