@@ -23,12 +23,12 @@
         </tr>
     </thead>
     <tbody>
-        {% for detalle in cotizacion.detalles.all %}
+        {% for p in productos%}
         <tr class="text-gray-700">
-            <td class="p-4 border">{{ detalle.producto.nombre }}</td>
-            <td class="p-4 border">{{ detalle.cantidad }}</td>
-            <td class="p-4 border">{{ detalle.precio_unitario }}</td>
-            <td class="p-4 border">{{ detalle.subtotal }}</td>
+            <td class="p-4 border">{{ p.nombre }}</td>
+            <td class="p-4 border">{{ p.cantidad }}</td>
+            <td class="p-4 border">{{ p.precio }}</td>
+            <td class="p-4 border">{{ p.subtotal }}</td>
         </tr>
         {% endfor %}
     </tbody>

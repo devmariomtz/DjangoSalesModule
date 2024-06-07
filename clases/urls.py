@@ -21,7 +21,6 @@ urlpatterns = [
     path('detalle_producto/<str:id>/', views.detalle_producto, name='detalle_producto'),
     path('crear_orden/', views.crear_orden_view, name='crear_orden'),
     path('obtener_productos/', views.obtener_productos, name='obtener_productos'),
-    path('detalle_cotizacion/<str:id>/', views.detalle_cotizacion, name='detalle_cotizacion'),
     path('aceptar_cotizacion/<str:id>/', views.aceptar_cotizacion, name='aceptar_cotizacion'),
     path('denegar_cotizacion/<str:id>/', views.denegar_cotizacion, name='denegar_cotizacion'),
 ]

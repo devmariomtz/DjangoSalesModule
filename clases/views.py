@@ -17,7 +17,7 @@ from .forms import (
     ProductoForm,
     ProveedorForm,
 )
-from .models import DetalleOrden, OrdenCompra, Producto, Proveedor, Usuario,productosDetalleOrden
+from .models import DetalleOrden, OrdenCompra, Producto, Proveedor, Usuario,productosDetalleOrden,productosDetalleOrden
 
 
 # Vista para el inicio de sesión
@@ -108,7 +108,17 @@ def editar_cotizacion(request, id):
 # Vista para ver el detalle de una cotización
 def detalle_cotizacion(request, id):
     cotizacion = get_object_or_404(OrdenCompra, ID=id)
-    return render(request, 'detalle_cotizacion.html', {'cotizacion': cotizacion})
+    detalle = productosDetalleOrden.objects.filter(orden=cotizacion)  
+    # traer todos los productos de la base de datos que estan en el detalle de la orden
+    lista = []
+    for item in detalle:
+        producto = Producto.objects.get(ID=item.producto.ID)
+        producto.cantidad = item.cantidad
+        producto.subtotal = item.subtotal
+        lista.append(producto)
+    print('----------------lista----------------')
+    print(lista)
+    return render(request, 'detalle_cotizacion.html', {'cotizacion': cotizacion, 'productos': lista})
 
 # Vista para gestionar proveedores
 def gestionar_proveedores(request):
@@ -318,9 +328,9 @@ def obtener_productos(request):
         return JsonResponse({'error': 'Proveedor no válido'}, status=400)
 
 
-def detalle_cotizacion(request, id):
-    cotizacion = get_object_or_404(OrdenCompra, ID=id)
-    return render(request, 'detalle_cotizacion.html', {'cotizacion': cotizacion})
+# def detalle_cotizacion(request, id):
+#     cotizacion = get_object_or_404(OrdenCompra, ID=id)
+#     return render(request, 'detalle_cotizacion.html', {'cotizacion': cotizacion})
 
 def aceptar_cotizacion(request, id):
     cotizacion = get_object_or_404(OrdenCompra, ID=id)

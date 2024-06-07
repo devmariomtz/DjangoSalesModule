@@ -33,7 +33,7 @@
             </div>
             <div>
                 <label for="id_telefono" class="agregar-proveedor-label">Teléfono:</label>
-                {{ form.telefono|add_class:"input input-bordered input-sm w-full text-black"|attr:"placeholder:0000-0000"|attr:"type:number" }}
+                {{ form.telefono|add_class:"input input-bordered input-sm w-full text-black"|attr:"placeholder:0000-0000" }}
             </div>
             <div>
                 <label for="id_correo_electronico" class="agregar-proveedor-label">Correo Electrónico:</label>
@@ -124,24 +124,7 @@
         });
 
         // validar que el input de #id_telefono sean solo numeros y guiones
-        document.getElementById('id_telefono').addEventListener('input', function (event) {
-            const telefonoField = document.getElementById('id_telefono');
-            const telefonoValue = telefonoField.value.trim();
-            const telefonoPattern = /^\d{4}-\d{4}$/;
-            // si telefonoValue no es numero, - o +, entonces se borra
-            if ((!/^\d|-/.test(event.data)) && telefonoValue.length < 9) {
-                telefonoField.value = telefonoValue.slice(0, telefonoValue.length - 1);
-                // fin de la funcion
-                return;
-            }
-            // solo se evalua si el telefonoValue tiene 9 caracteres
-            if (telefonoValue.length >= 9) {
-                if (!telefonoPattern.test(telefonoValue)) {
-                    alert("El teléfono debe tener el formato 0000-0000.");
-                    telefonoField.value = telefonoValue.slice(0, telefonoValue.length - 1);
-                }
-            }
-        });
+        
     });
 </script>
 {% endblock %}

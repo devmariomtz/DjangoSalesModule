@@ -54,11 +54,11 @@ class Proveedor(models.Model):
     nombre = models.CharField(max_length=100)
     telefono = models.CharField(
         max_length=15,
-        validators=[
-            RegexValidator(
-                regex="^\+?[\d-]{1,15}$", message="Número de teléfono inválido."
-            )
-        ]
+        # validators=[
+        #     RegexValidator(
+        #         regex="^\+?[\d-]{1,15}$", message="Número de teléfono inválido."
+        #     )
+        # ]
     )
     correo_electronico = models.EmailField()
     ciudad = models.CharField(max_length=100)
